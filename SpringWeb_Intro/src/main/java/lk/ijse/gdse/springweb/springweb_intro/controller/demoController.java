@@ -88,14 +88,14 @@ public class DemoController {
 //        return "Handle multi value maps with params: "+params;
 //    }
 
-//    // bind data to a Dto
-//    @PostMapping(value = "/customer", consumes = MediaType.APPLICATION_JSON_VALUE) //http://localhost:8080/SpringWebIntro/demo/customer
-//    public String JSONToDto(@RequestBody Customer customer){
-//        System.out.println(customer);
-//        return "Convert success";
-//    }
+    // bind data to a Dto
+    @PostMapping(value = "/customer", consumes = MediaType.APPLICATION_JSON_VALUE) //http://localhost:8080/SpringWebIntro/demo/customer
+    public String JSONToDto(@RequestBody Customer customer){
+        System.out.println(customer);
+        return "Convert success";
+    }
 
-    
+
 }
 
 
