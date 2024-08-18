@@ -1,6 +1,6 @@
 package lk.ijse.gdse.springweb.springweb_intro.controller;
 
-import jakarta.servlet.http.HttpServlet;
+import lk.ijse.gdse.springweb.springweb_intro.dto.Customer;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -74,10 +74,28 @@ public class DemoController {
     }
     // get data as a MultiValueMap
     @PostMapping(value = "/multimapparams", params = { "id", "desc"}) //http://localhost:8080/SpringWebIntro/demo/multimapparams?id=1&desc=Test&id=2&desc=Test2
-    public String handleWithMultiMaps ( @RequestParam("id") String id, @RequestParam("desc") String desc, @RequestParam MultiValueMap<String, String> params) {
+    public String handleWithMultiMaps ( @RequestParam("id") String id, @RequestParam("desc") String desc,
+                                        @RequestParam MultiValueMap<String, String> params) {
         System.out.println(params);
         return "Handle multi value maps with params: "+params;
     }
+
+    //bind data to a Dto
+//    @PostMapping(value = "/multimapparams", params = { "id", "desc"}) //http://localhost:8080/SpringWebIntro/demo/multimapparams?id=1&desc=Test&id=2&desc=Test2
+//    public String handleWithMultiMaps ( @RequestParam("id") String id, @RequestParam("desc") String desc,
+//                                        @RequestParam MultiValueMap<String, String> params,Item item) {
+//        System.out.println(params);
+//        return "Handle multi value maps with params: "+params;
+//    }
+
+//    // bind data to a Dto
+//    @PostMapping(value = "/customer", consumes = MediaType.APPLICATION_JSON_VALUE) //http://localhost:8080/SpringWebIntro/demo/customer
+//    public String JSONToDto(@RequestBody Customer customer){
+//        System.out.println(customer);
+//        return "Convert success";
+//    }
+
+    
 }
 
 
