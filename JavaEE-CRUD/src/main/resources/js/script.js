@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
       error: (xhr, status, error) => {
         console.error("Failed to submit the form:", error);
       }
-    });
+    }); 
   });
 });
 

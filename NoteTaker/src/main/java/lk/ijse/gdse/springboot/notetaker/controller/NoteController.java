@@ -15,9 +15,9 @@ import java.util.List;
 @RequestMapping("/api/v1/note")
 @RequiredArgsConstructor
 public class NoteController {
+
     @Autowired
     private final NoteService noteService;
-
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> createNote(@RequestBody NoteDto note){ //http://localhost:8080/notetaker/api/v1/note
