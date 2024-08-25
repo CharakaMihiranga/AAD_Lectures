@@ -4,6 +4,7 @@ import lk.ijse.gdse.springboot.notetaker.service.NoteService;
 import lk.ijse.gdse.springboot.notetaker.dto.NoteDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.List;
 public class NoteController {
     @Autowired
     private final NoteService noteService;
+
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> createNote(@RequestBody NoteDto note){ //http://localhost:8080/notetaker/api/v1/note
@@ -31,10 +33,12 @@ public class NoteController {
     public NoteDto getNote(@PathVariable("noteId") String noteId){ //http://localhost:8080/notetaker/api/v1/note/1
         return noteService.getNote(noteId);
     }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping(value = "/{noteId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void updateNote(@PathVariable("noteId") String noteId,@RequestBody NoteDto note){ //http://localhost:8080/notetaker/api/v1/note/1
         noteService.updateNote(noteId, note);
     }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(value = "/{noteId}")
     public void deleteNote(@PathVariable("noteId") String noteId){ //http://localhost:8080/notetaker/api/v1/note/1
         noteService.deleteNote(noteId);

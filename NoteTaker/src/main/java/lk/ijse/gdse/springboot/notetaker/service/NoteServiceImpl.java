@@ -64,11 +64,11 @@ public final class NoteServiceImpl implements NoteService {
 
     @Override
     public void deleteNote(String noteId) {
-        ListIterator<NoteDto> updatedList = saveNoteTmp.listIterator();
-        while (updatedList.hasNext()){
-            NoteDto note = updatedList.next();
+        ListIterator<NoteDto> deleteList = saveNoteTmp.listIterator();
+        while (deleteList.hasNext()){
+            NoteDto note = deleteList.next();
             if (note.getNoteId().equals(noteId)){
-                updatedList.remove();
+                deleteList.remove();
                 break;
             }
         }
