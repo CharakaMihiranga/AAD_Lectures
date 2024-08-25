@@ -4,7 +4,7 @@ import lk.ijse.gdse.springboot.notetaker.dto.NoteDto;
 
 import java.util.List;
 
-public sealed interface NoteService permits NoteServiceImpl {
+public interface NoteService {
     String saveNote(NoteDto noteDto);
     void updateNote(String noteId, NoteDto noteDto);
     void deleteNote(String noteId);
