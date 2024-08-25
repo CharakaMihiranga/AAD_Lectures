@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 @Service
 public final class NoteServiceImpl implements NoteService {
@@ -49,28 +50,28 @@ public final class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public boolean updateNote(String noteId, NoteDto noteDto) {
-        for (NoteDto note : saveNoteTmp) {
-            if (noteId.equals(note.getNoteId())) {
-                note.setNoteTitle(noteDto.getNoteTitle());
-                note.setNoteDesc(noteDto.getNoteDesc());
-                note.setPriorityLevel(noteDto.getPriorityLevel());
-                note.setCreatedDate(noteDto.getCreatedDate());
-                return true;
-            }
-        }
-        return false;
+    public void updateNote(String noteId, NoteDto noteDto) {
+       ListIterator<NoteDto> updatedList = saveNoteTmp.listIterator();
+         while (updatedList.hasNext()){
+              NoteDto note = updatedList.next();
+              if (note.getNoteId().equals(noteId)){
+                noteDto.setNoteId(noteId);
+                updatedList.set(noteDto);
+                break;
+              }
+         }
     }
 
     @Override
-    public boolean deleteNote(String noteId) {
-        for (NoteDto noteDto : saveNoteTmp){
-            if (noteDto.getNoteId().equals(noteId)){
-                saveNoteTmp.remove(noteDto);
-                return true;
+    public void deleteNote(String noteId) {
+        ListIterator<NoteDto> updatedList = saveNoteTmp.listIterator();
+        while (updatedList.hasNext()){
+            NoteDto note = updatedList.next();
+            if (note.getNoteId().equals(noteId)){
+                updatedList.remove();
+                break;
             }
         }
-        return false;
     }
 
     @Override
