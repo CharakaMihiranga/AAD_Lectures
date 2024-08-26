@@ -1,7 +1,10 @@
 package lk.ijse.gdse.springboot.notetaker.config;
 
+import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
+import jakarta.annotation.PreDestroy;
 import jakarta.persistence.EntityManagerFactory;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -15,12 +18,14 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 
 @Configuration
 @ComponentScan(basePackages = "lk.ijse.gdse.springboot.notetaker")
 @EnableWebMvc
-@EnableJpaRepositories
+@EnableJpaRepositories(basePackages = "lk.ijse.gdse.springboot.notetaker")
 @EnableTransactionManagement
 public class WebAppRootConfig {
 
@@ -58,4 +63,5 @@ public class WebAppRootConfig {
         txManager.setEntityManagerFactory(entityManagerFactory);
         return txManager;
     }
+
 }
