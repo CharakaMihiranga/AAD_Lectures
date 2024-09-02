@@ -21,7 +21,7 @@ public class NoteServiceImpl implements NoteService {
     @Autowired
     private Mapping mapping;
 
-       @Override
+    @Override
     public String saveNote(NoteDto noteDto) {
         noteDto.setNoteId(AppUtil.createNoteId());
         var noteEntity = mapping.convertToEntity(noteDto);

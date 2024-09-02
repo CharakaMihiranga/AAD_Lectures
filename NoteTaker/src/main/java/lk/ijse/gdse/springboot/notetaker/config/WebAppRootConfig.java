@@ -16,6 +16,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import javax.sql.DataSource;
 import java.sql.DriverManager;
@@ -24,7 +25,6 @@ import java.sql.SQLException;
 
 @Configuration
 @ComponentScan(basePackages = "lk.ijse.gdse.springboot.notetaker")
-@EnableWebMvc
 @EnableJpaRepositories(basePackages = "lk.ijse.gdse.springboot.notetaker")
 @EnableTransactionManagement
 public class WebAppRootConfig {
@@ -46,7 +46,6 @@ public class WebAppRootConfig {
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(true);
 
