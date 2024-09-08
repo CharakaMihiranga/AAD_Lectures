@@ -1,6 +1,6 @@
 package lk.ijse.gdse.springboot.notetaker.service;
 
-import lk.ijse.gdse.springboot.notetaker.dto.NoteDto;
+import lk.ijse.gdse.springboot.notetaker.dto.Impl.NoteDto;
 
 import java.util.List;
 

@@ -2,15 +2,13 @@ package lk.ijse.gdse.springboot.notetaker.service;
 
 import jakarta.transaction.Transactional;
 import lk.ijse.gdse.springboot.notetaker.dao.NoteDao;
-import lk.ijse.gdse.springboot.notetaker.dto.NoteDto;
+import lk.ijse.gdse.springboot.notetaker.dto.Impl.NoteDto;
 import lk.ijse.gdse.springboot.notetaker.util.AppUtil;
 import lk.ijse.gdse.springboot.notetaker.util.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 @Service
 @Transactional

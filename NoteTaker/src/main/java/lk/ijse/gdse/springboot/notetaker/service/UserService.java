@@ -1,14 +1,14 @@
 package lk.ijse.gdse.springboot.notetaker.service;
 
-import lk.ijse.gdse.springboot.notetaker.dao.UserDao;
-import lk.ijse.gdse.springboot.notetaker.dto.UserDto;
+import lk.ijse.gdse.springboot.notetaker.customObj.UserResponse;
+import lk.ijse.gdse.springboot.notetaker.dto.Impl.UserDto;
 
 import java.util.List;
 
 public interface UserService {
-    String saveUser(UserDto userDto);
-    boolean updateUser(UserDto userDto);
-    boolean deleteUser(String userId);
-    UserDto getSelectedUser(String userId);
+    void saveUser(UserDto userDto);
+    void updateUser(UserDto userDto);
+    void deleteUser(String userId);
+    UserResponse getSelectedUser(String userId);
     List<UserDto> getAllUsers();
 }

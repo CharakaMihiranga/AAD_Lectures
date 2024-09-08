@@ -1,6 +1,9 @@
 package lk.ijse.gdse.springboot.notetaker.controller;
 
-import lk.ijse.gdse.springboot.notetaker.dto.UserDto;
+import lk.ijse.gdse.springboot.notetaker.customObj.UserResponse;
+import lk.ijse.gdse.springboot.notetaker.dto.Impl.UserDto;
+import lk.ijse.gdse.springboot.notetaker.exception.DataPersistFailedException;
+import lk.ijse.gdse.springboot.notetaker.exception.UserNotFoundException;
 import lk.ijse.gdse.springboot.notetaker.service.UserService;
 import lk.ijse.gdse.springboot.notetaker.util.AppUtil;
 import lombok.RequiredArgsConstructor;
@@ -20,35 +23,48 @@ public class UserController {
    private final UserService userService;
    //Save user
    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE) //http://localhost:8080/notetaker/api/v1/users
-    public ResponseEntity<String> saveUser(
+    public ResponseEntity<Void> saveUser(
             @RequestPart("firstName") String firstName,
             @RequestPart("lastName") String lastName,
             @RequestPart("email") String email,
             @RequestPart("password") String password,
             @RequestPart("profilePic") String profilePic
-    ) {
-       //Handle profile pic
-       String base64ProfilePic = AppUtil.toBase64ProfilePic(profilePic); //Base64 encoding used to convert the image to a  string
-       //build the user object
-       UserDto buildUserDto = new UserDto();
-       buildUserDto.setFirstName(firstName);
-       buildUserDto.setLastName(lastName);
-       buildUserDto.setEmail(email);
-       buildUserDto.setPassword(password);
-       buildUserDto.setProfilePic(base64ProfilePic);
-       //send to the service layer
-       return new ResponseEntity<>(userService.saveUser(buildUserDto), HttpStatus.CREATED);
+    ){
+       try{
+           //Handle profile pic
+           String base64ProfilePic = AppUtil.toBase64ProfilePic(profilePic); //Base64 encoding used to convert the image to a  string
+           //build the user object
+           UserDto buildUserDto = new UserDto();
+           buildUserDto.setFirstName(firstName);
+           buildUserDto.setLastName(lastName);
+           buildUserDto.setEmail(email);
+           buildUserDto.setPassword(password);
+           buildUserDto.setProfilePic(base64ProfilePic);
+           //send to the service layer
+           userService.saveUser(buildUserDto);
+           return new ResponseEntity<>(HttpStatus.CREATED);
+       } catch (DataPersistFailedException e) {
+           return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+       } catch (Exception e) {
+              return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+       }
     }
 
    //Delete user
    @DeleteMapping("/{userId}") //http://localhost:8080/notetaker/api/v1/users/{userId}
-   public ResponseEntity<String> deleteUser(@PathVariable("userId") String userId){
-        return userService.deleteUser(userId)
-                ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+   public ResponseEntity<Void> deleteUser(@PathVariable("userId") String userId){
+       try{
+           userService.deleteUser(userId);
+           return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+       } catch (UserNotFoundException e) {
+           return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+       } catch (Exception e) {
+           return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+       }
    }
 
    @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE) //http://localhost:8080/notetaker/api/v1/users/{userId}
-   public UserDto getSelectedUser(@PathVariable("userId") String userId){
+   public UserResponse getSelectedUser(@PathVariable("userId") String userId){
        return userService.getSelectedUser(userId);
    }
 
@@ -58,33 +74,39 @@ public class UserController {
    }
 
    @PatchMapping(value = "/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE) //http://localhost:8080/notetaker/api/v1/users/{userId}
-   public ResponseEntity<String> updateUser(
+   public ResponseEntity<Void> updateUser(
            @PathVariable ("userId") String userId,
            @RequestPart("firstName") String updateFirstName,
            @RequestPart("lastName") String updateLastName,
            @RequestPart("email") String updateEmail,
            @RequestPart("password") String updatePassword,
            @RequestPart("profilePic") String updateProfilePic
-               ){
-       //Handle profile pic
-       String updatedBase64ProfilePic = AppUtil.toBase64ProfilePic(updateProfilePic); //Base64 encoding used to convert the image to a  string
-       //build the user object
-       UserDto updatedUserDto = new UserDto();
-       updatedUserDto.setUserId(userId);
-       updatedUserDto.setFirstName(updateFirstName);
-       updatedUserDto.setLastName(updateLastName);
-       updatedUserDto.setEmail(updateEmail);
-       updatedUserDto.setPassword(updatePassword);
-       updatedUserDto.setProfilePic(updatedBase64ProfilePic);
-       return userService.updateUser(updatedUserDto)
-               ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+   ){
+       try{
+           //Handle profile pic
+           String updatedBase64ProfilePic = AppUtil.toBase64ProfilePic(updateProfilePic); //Base64 encoding used to convert the image to a  string
+           //build the user object
+           UserDto updatedUserDto = new UserDto();
+           updatedUserDto.setUserId(userId);
+           updatedUserDto.setFirstName(updateFirstName);
+           updatedUserDto.setLastName(updateLastName);
+           updatedUserDto.setEmail(updateEmail);
+           updatedUserDto.setPassword(updatePassword);
+           updatedUserDto.setProfilePic(updatedBase64ProfilePic);
+           userService.updateUser(updatedUserDto);
+           return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+       } catch (UserNotFoundException e) {
+           return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+       } catch (Exception e) {
+           return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+       }
    }
 
 }
 
 // ** MultiPart Form data **//
 // MultiPart Form data is a way to send data to the server in the form of a form. It is used to send files and text data to the server.
-//It send data as parts. Each part is a key-value pair. The key is the name of the input field and the value is the value of the input field.
+//It sends data as parts. Each part is a key-value pair. The key is the name of the input field and the value is the value of the input field.
 
 // ** Maximum file size & Maximum request size ** //
 //the difference between  maxFileSize and maxRequestSize is that maxFileSize is the maximum size of a single file that can be uploaded,
