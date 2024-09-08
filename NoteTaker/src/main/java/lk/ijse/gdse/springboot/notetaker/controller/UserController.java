@@ -4,17 +4,13 @@ import lk.ijse.gdse.springboot.notetaker.dto.UserDto;
 import lk.ijse.gdse.springboot.notetaker.service.UserService;
 import lk.ijse.gdse.springboot.notetaker.util.AppUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -32,7 +28,7 @@ public class UserController {
             @RequestPart("profilePic") String profilePic
     ) {
        //Handle profile pic
-       String base64ProfilePic = AppUtil.toBase64ProfilePic(profilePic); //Base64 encoding used to convert the image to a string
+       String base64ProfilePic = AppUtil.toBase64ProfilePic(profilePic); //Base64 encoding used to convert the image to a  string
        //build the user object
        UserDto buildUserDto = new UserDto();
        buildUserDto.setFirstName(firstName);
@@ -44,6 +40,46 @@ public class UserController {
        return new ResponseEntity<>(userService.saveUser(buildUserDto), HttpStatus.CREATED);
     }
 
+   //Delete user
+   @DeleteMapping("/{userId}") //http://localhost:8080/notetaker/api/v1/users/{userId}
+   public ResponseEntity<String> deleteUser(@PathVariable("userId") String userId){
+        return userService.deleteUser(userId)
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+   }
+
+   @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE) //http://localhost:8080/notetaker/api/v1/users/{userId}
+   public UserDto getSelectedUser(@PathVariable("userId") String userId){
+       return userService.getSelectedUser(userId);
+   }
+
+   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE) //http://localhost:8080/notetaker/api/v1/users
+   public List<UserDto> getAllUsers(){
+       return userService.getAllUsers();
+   }
+
+   @PatchMapping(value = "/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE) //http://localhost:8080/notetaker/api/v1/users/{userId}
+   public ResponseEntity<String> updateUser(
+           @PathVariable ("userId") String userId,
+           @RequestPart("firstName") String updateFirstName,
+           @RequestPart("lastName") String updateLastName,
+           @RequestPart("email") String updateEmail,
+           @RequestPart("password") String updatePassword,
+           @RequestPart("profilePic") String updateProfilePic
+               ){
+       //Handle profile pic
+       String updatedBase64ProfilePic = AppUtil.toBase64ProfilePic(updateProfilePic); //Base64 encoding used to convert the image to a  string
+       //build the user object
+       UserDto updatedUserDto = new UserDto();
+       updatedUserDto.setUserId(userId);
+       updatedUserDto.setFirstName(updateFirstName);
+       updatedUserDto.setLastName(updateLastName);
+       updatedUserDto.setEmail(updateEmail);
+       updatedUserDto.setPassword(updatePassword);
+       updatedUserDto.setProfilePic(updatedBase64ProfilePic);
+       return userService.updateUser(updatedUserDto)
+               ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+   }
+
 }
 
 // ** MultiPart Form data **//
@@ -53,3 +89,10 @@ public class UserController {
 // ** Maximum file size & Maximum request size ** //
 //the difference between  maxFileSize and maxRequestSize is that maxFileSize is the maximum size of a single file that can be uploaded,
 // while maxRequestSize is the maximum size of the entire request, including all files and other form data.
+
+//** Restful API **//
+//RESTful API is an architectural style for an application program interface (API) that uses HTTP requests to perform four operations:
+//GET (read), POST (create), PUT (update), and DELETE (delete). RESTful API is used to create web services.
+//difference between rest and restfull is that rest is an architectural style and restfull is an implementation of that style.
+//Restful API is a type of web service that is built to work with HTTP requests.
+// It is a stateless architecture that allows clients to access and manipulate web resources using a uniform and predefined set of stateless operations.

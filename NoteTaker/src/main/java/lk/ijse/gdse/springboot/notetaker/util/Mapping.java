@@ -5,6 +5,7 @@ import lk.ijse.gdse.springboot.notetaker.dto.UserDto;
 import lk.ijse.gdse.springboot.notetaker.entity.NoteEntity;
 import lk.ijse.gdse.springboot.notetaker.entity.UserEntity;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +34,7 @@ public class Mapping {
     public UserDto convertToUserDTO(UserEntity userEntity) {
         return modelMapper.map(userEntity, UserDto.class);
     }
-    public List<UserDto> convertUserToDTO(List<UserEntity> userEntities) {
-        return modelMapper.map(userEntities, List.class);
+    public List<UserDto> convertUsersToList(List<UserEntity> userEntities) {
+        return modelMapper.map(userEntities, new TypeToken<List<UserDto>>(){}.getType());
     }
 }
