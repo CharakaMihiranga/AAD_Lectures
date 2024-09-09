@@ -46,7 +46,7 @@ public class UserController {
        } catch (DataPersistFailedException e) {
            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
        } catch (Exception e) {
-              return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+           return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
        }
     }
 
