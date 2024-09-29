@@ -1,9 +1,12 @@
 package lk.ijse.gdse.springboot.notetaker.service;
 
 import jakarta.transaction.Transactional;
+import lk.ijse.gdse.springboot.notetaker.customObj.NoteErrorResponse;
+import lk.ijse.gdse.springboot.notetaker.customObj.NoteResponse;
 import lk.ijse.gdse.springboot.notetaker.dao.NoteDao;
 import lk.ijse.gdse.springboot.notetaker.dto.Impl.NoteDto;
 import lk.ijse.gdse.springboot.notetaker.entity.NoteEntity;
+import lk.ijse.gdse.springboot.notetaker.exception.DataPersistFailedException;
 import lk.ijse.gdse.springboot.notetaker.exception.NoteNotFoundException;
 import lk.ijse.gdse.springboot.notetaker.util.AppUtil;
 import lk.ijse.gdse.springboot.notetaker.util.Mapping;
@@ -23,11 +26,14 @@ public class NoteServiceImpl implements NoteService {
     private Mapping mapping;
 
     @Override
-    public String saveNote(NoteDto noteDto) {
+    public void saveNote(NoteDto noteDto) {
         noteDto.setNoteId(AppUtil.createNoteId());
         var noteEntity = mapping.convertToEntity(noteDto);
-        noteDao.save(noteEntity);
-        return "Note Saved successfully in Bo Layer";
+        var savedNote = noteDao.save(noteEntity);
+        if ( savedNote == null ){
+            throw new DataPersistFailedException("Can't save the note");
+        }
+
     }
 
     @Override
@@ -54,8 +60,12 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public NoteDto getNote(String noteId) {
-        return mapping.convertToDto(noteDao.getReferenceById(noteId));
+    public NoteResponse getNote(String noteId) {
+        if (noteDao.existsById(noteId)){
+            return mapping.convertToDto(noteDao.getReferenceById(noteId));
+        } else {
+            return new NoteErrorResponse(0, "Note not found");
+        }
     }
 
     @Override

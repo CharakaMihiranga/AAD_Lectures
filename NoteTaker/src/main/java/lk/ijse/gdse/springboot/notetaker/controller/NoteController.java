@@ -1,5 +1,7 @@
 package lk.ijse.gdse.springboot.notetaker.controller;
 
+import lk.ijse.gdse.springboot.notetaker.customObj.NoteResponse;
+import lk.ijse.gdse.springboot.notetaker.exception.DataPersistFailedException;
 import lk.ijse.gdse.springboot.notetaker.exception.NoteNotFoundException;
 import lk.ijse.gdse.springboot.notetaker.service.NoteService;
 import lk.ijse.gdse.springboot.notetaker.dto.Impl.NoteDto;
@@ -21,22 +23,31 @@ public class NoteController {
 
     @Autowired
     private final NoteService noteService;
-    @GetMapping("health")
-    public String healthCheck() {
-        return "Note taker is running";
-    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> createNote(@RequestBody NoteDto note){ //http://localhost:8080/notetaker/api/v1/note
+    public ResponseEntity<Void> createNote(@RequestBody NoteDto note){ //http://localhost:8080/notetaker/api/v1/note
         //Todo: Handle with Bo
-        var saveData = noteService.saveNote(note);
-        return ResponseEntity.ok(saveData);
+        if (note == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            try{
+                noteService.saveNote(note);
+                return new ResponseEntity<>(HttpStatus.CREATED);
+            } catch (DataPersistFailedException e) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } catch (Exception e) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                //internal server error putting to the last catch block bcz
+                // it is the most generic exception
+            }
+        }
     }
     @GetMapping( value = "allnotes", produces = MediaType.APPLICATION_JSON_VALUE )
     public List<NoteDto> getAllNotes(){  //http://localhost:8080/notetaker/api/v1/note/allnotes
         return noteService.getAllNotes();
     }
     @GetMapping(value = "/{noteId}" , produces = MediaType.APPLICATION_JSON_VALUE)
-    public NoteDto getNote(@PathVariable("noteId") String noteId){ //http://localhost:8080/notetaker/api/v1/note/1
+    public NoteResponse getNote(@PathVariable("noteId") String noteId){ //http://localhost:8080/notetaker/api/v1/note/1
         return noteService.getNote(noteId);
     }
     @ResponseStatus(HttpStatus.NO_CONTENT)
