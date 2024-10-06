@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class HealthTestController {
     @GetMapping
     public String healthCheck() {
-        return "Note taker is running";
+        return "Note taker V2 is running";
     }
 }
