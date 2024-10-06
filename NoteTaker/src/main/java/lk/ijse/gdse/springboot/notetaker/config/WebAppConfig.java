@@ -13,9 +13,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableJpaRepositories(basePackages = "lk.ijse.gdse.springboot.notetaker") //this annotation is used to import the JPA configuration
 @EnableTransactionManagement //this annotation is used to import the transaction management configuration
 @MultipartConfig(
-        fileSizeThreshold = 1024 * 1024 * 2, //2MB
-        maxFileSize = 1024 * 1024 * 10, // 10MB
-        maxRequestSize = 1024 * 1024 * 50 // 50MB
+        fileSizeThreshold = 1024 * 1024 * 2, //2MB, this is the size of the file that will be stored in ram
+        maxFileSize = 1024 * 1024 * 10, // 10MB, this is the size of the file that will be stored in the disk
+        maxRequestSize = 1024 * 1024 * 50 // 50MB, this is the size of the request that will be processed
 ) //this annotation used to configure the file upload size limits
 public class WebAppConfig {
 }

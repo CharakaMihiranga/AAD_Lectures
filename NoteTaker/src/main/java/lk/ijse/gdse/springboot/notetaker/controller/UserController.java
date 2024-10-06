@@ -106,7 +106,7 @@ public class UserController {
 
 // ** MultiPart Form data **//
 // MultiPart Form data is a way to send data to the server in the form of a form. It is used to send files and text data to the server.
-//It sends data as parts. Each part is a key-value pair. The key is the name of the input field and the value is the value of the input field.
+//It sends data as parts. Each part is a key-value pair with a unique header and body. The key is the name of the input field and the value is the value of the input field.
 
 // ** Maximum file size & Maximum request size ** //
 //the difference between  maxFileSize and maxRequestSize is that maxFileSize is the maximum size of a single file that can be uploaded,

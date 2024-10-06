@@ -54,7 +54,7 @@ public class NoteController {
     @PatchMapping(value = "/{noteId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateNote(@PathVariable("noteId") String noteId,@RequestBody NoteDto note){ //http://localhost:8080/notetaker/api/v1/note/1
         try{
-            if (note == null && (noteId == null || note.equals(""))){
+            if (note == null && (noteId == null || noteId.isEmpty())){
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             noteService.updateNote(noteId, note);
@@ -80,3 +80,6 @@ public class NoteController {
         }
     }
 }
+
+// Http verbs => GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD
+// Http noun => /api/v1/note
