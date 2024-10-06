@@ -1,7 +1,7 @@
 package lk.ijse.gdse.springboot.notetakerV2.service;
 
-import lk.ijse.gdse.springboot.notetaker.customObj.NoteResponse;
-import lk.ijse.gdse.springboot.notetaker.dto.Impl.NoteDto;
+import lk.ijse.gdse.springboot.notetakerV2.customObj.NoteResponse;
+import lk.ijse.gdse.springboot.notetakerV2.dto.Impl.NoteDto;
 
 import java.util.List;
 

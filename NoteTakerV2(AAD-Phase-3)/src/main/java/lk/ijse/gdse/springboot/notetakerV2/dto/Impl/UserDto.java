@@ -1,7 +1,7 @@
 package lk.ijse.gdse.springboot.notetakerV2.dto.Impl;
 
-import lk.ijse.gdse.springboot.notetaker.customObj.UserResponse;
-import lk.ijse.gdse.springboot.notetaker.dto.SuperDto;
+import lk.ijse.gdse.springboot.notetakerV2.customObj.UserResponse;
+import lk.ijse.gdse.springboot.notetakerV2.dto.SuperDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

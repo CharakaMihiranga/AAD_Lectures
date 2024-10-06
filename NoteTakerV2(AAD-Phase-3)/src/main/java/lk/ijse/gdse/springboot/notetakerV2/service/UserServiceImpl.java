@@ -1,18 +1,18 @@
 package lk.ijse.gdse.springboot.notetakerV2.service;
 
-import jakarta.transaction.Transactional;
-import lk.ijse.gdse.springboot.notetaker.customObj.UserErrorResponse;
-import lk.ijse.gdse.springboot.notetaker.customObj.UserResponse;
-import lk.ijse.gdse.springboot.notetaker.dao.UserDao;
-import lk.ijse.gdse.springboot.notetaker.dto.Impl.UserDto;
-import lk.ijse.gdse.springboot.notetaker.entity.UserEntity;
-import lk.ijse.gdse.springboot.notetaker.exception.DataPersistFailedException;
-import lk.ijse.gdse.springboot.notetaker.exception.UserNotFoundException;
-import lk.ijse.gdse.springboot.notetaker.util.AppUtil;
-import lk.ijse.gdse.springboot.notetaker.util.Mapping;
+import lk.ijse.gdse.springboot.notetakerV2.customObj.UserErrorResponse;
+import lk.ijse.gdse.springboot.notetakerV2.customObj.UserResponse;
+import lk.ijse.gdse.springboot.notetakerV2.dao.UserDao;
+import lk.ijse.gdse.springboot.notetakerV2.dto.Impl.UserDto;
+import lk.ijse.gdse.springboot.notetakerV2.entity.UserEntity;
+import lk.ijse.gdse.springboot.notetakerV2.exception.DataPersistFailedException;
+import lk.ijse.gdse.springboot.notetakerV2.exception.UserNotFoundException;
+import lk.ijse.gdse.springboot.notetakerV2.util.AppUtil;
+import lk.ijse.gdse.springboot.notetakerV2.util.Mapping;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
