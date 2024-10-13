@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 public class NotetakerV2Application {
 
 	public static void main(String[] args) {
-
 		SpringApplication.run(NotetakerV2Application.class, args);
 	}
 
