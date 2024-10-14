@@ -1,5 +1,6 @@
 package lk.ijse.gdse.springboot.notetakerV2.config;
 
+import lk.ijse.gdse.springboot.notetakerV2.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private final UserService userService;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
@@ -41,7 +43,7 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider dap =
                 new DaoAuthenticationProvider();
-        dap.setUserDetailsService();
+        dap.setUserDetailsService(userService.userDetailService());
         dap.setPasswordEncoder(passwordEncoder());
         return dap;
     }
