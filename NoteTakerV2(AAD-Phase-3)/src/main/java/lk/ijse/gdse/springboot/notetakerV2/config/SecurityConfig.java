@@ -1,54 +1,54 @@
 package lk.ijse.gdse.springboot.notetakerV2.config;
 
+import lk.ijse.gdse.springboot.notetakerV2.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-    // Value annotation is used to inject values from the application.properties file
-    @Value("${secure.basic.username}")
-    String username;
-    @Value("${secure.basic.password}")
-    String password;
-    @Value("${secure.basic.role}")
-    String role;
-
+    private final UserService userService;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeRequests()
-                .anyRequest().authenticated()
-                .and()
-                .httpBasic();
+                .authorizeRequests( req ->
+                        req.requestMatchers("api/v1/auth/**").permitAll()
+                                .anyRequest()
+                                .authenticated())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore();
         return http.build();
     }
-
-    // Basic Authentication : this is the most basic form of authentication and it is not recommended for production use
-//    @Bean
-//    public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
-//        UserDetails principleUser = User.withDefaultPasswordEncoder()
-//                .username("Charaka")
-//                .password("Charaka123")
-//                .roles("ADMIN")
-//                .build();
-//        return new InMemoryUserDetailsManager(principleUser);
-//    }
-
-    // Basic Authentication : this is the most basic form of authentication and it is not recommended for production use
+    //Password encoder
     @Bean
-    public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
-        UserDetails principleUser = User.withDefaultPasswordEncoder()
-                .username(username)
-                .password(password)
-                .roles(role)
-                .build();
-        return new InMemoryUserDetailsManager(principleUser);
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+    //Auth provider
+    public AuthenticationProvider authenticationProvider(){
+        DaoAuthenticationProvider dap =
+                new DaoAuthenticationProvider();
+        dap.setUserDetailsService(userService.userDetailService());
+        dap.setPasswordEncoder(passwordEncoder());
+        return dap;
+    }
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
 }
