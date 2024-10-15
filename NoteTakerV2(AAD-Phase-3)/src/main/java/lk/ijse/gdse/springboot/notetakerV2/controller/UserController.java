@@ -22,33 +22,6 @@ import java.util.List;
 public class UserController {
    @Autowired
    private final UserService userService;
-   //Save user
-   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE) //http://localhost:8080/notetaker/api/v1/users
-    public ResponseEntity<Void> saveUser(
-            @RequestPart("firstName") String firstName,
-            @RequestPart("lastName") String lastName,
-            @RequestPart("email") String email,
-            @RequestPart("password") String password,
-            @RequestPart("profilePic") MultipartFile profilePic
-    ){
-       try{
-           String base64ProfilePic = AppUtil.toBase64ProfilePic(profilePic); //Base64 encoding used to convert the image to a  string
-           //build the user object
-           UserDto buildUserDto = new UserDto();
-           buildUserDto.setFirstName(firstName);
-           buildUserDto.setLastName(lastName);
-           buildUserDto.setEmail(email);
-           buildUserDto.setPassword(password);
-           buildUserDto.setProfilePic(base64ProfilePic);
-           //send to the service layer
-           userService.saveUser(buildUserDto);
-           return new ResponseEntity<>(HttpStatus.CREATED);
-       } catch (DataPersistFailedException e) {
-           return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-       } catch (Exception e) {
-           return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-       }
-    }
 
    //Delete user
    @DeleteMapping("/{userId}") //http://localhost:8080/notetaker/api/v1/users/{userId}

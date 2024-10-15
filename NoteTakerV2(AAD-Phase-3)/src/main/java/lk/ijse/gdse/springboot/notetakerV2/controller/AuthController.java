@@ -2,8 +2,10 @@ package lk.ijse.gdse.springboot.notetakerV2.controller;
 
 import lk.ijse.gdse.springboot.notetakerV2.dto.Impl.UserDto;
 import lk.ijse.gdse.springboot.notetakerV2.exception.DataPersistFailedException;
-import lk.ijse.gdse.springboot.notetakerV2.jwtModels.JWTResponse;
+import lk.ijse.gdse.springboot.notetakerV2.jwtModels.JWTAuthResponse;
+import lk.ijse.gdse.springboot.notetakerV2.jwtModels.JWTAuthResponse;
 import lk.ijse.gdse.springboot.notetakerV2.jwtModels.SignIn;
+import lk.ijse.gdse.springboot.notetakerV2.service.AuthenticationService;
 import lk.ijse.gdse.springboot.notetakerV2.service.UserService;
 import lk.ijse.gdse.springboot.notetakerV2.util.AppUtil;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,38 +21,42 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth") //http://localhost:8080/notetaker/api/v1/auth
 public class AuthController {
-
-    @Autowired
-    private final UserService userService;
+    private final AuthenticationService authenticationService;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping(value = "signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<JWTResponse> signUp(
+    public ResponseEntity<JWTAuthResponse> signUp(
             @RequestPart("firstName") String firstName,
             @RequestPart("lastName") String lastName,
             @RequestPart("email") String email,
             @RequestPart("password") String password,
-            @RequestPart("profilePic") MultipartFile profilePic
+            @RequestPart("profilePic") MultipartFile profilePic,
+            @RequestPart("role") String role
     ){
        try{
            String base64ProfilePic = AppUtil.toBase64ProfilePic(profilePic); //Base64 encoding used to convert the image to a  string
            UserDto buildUserDto = new UserDto();
+           buildUserDto.setUserId(AppUtil.createUserId());
            buildUserDto.setFirstName(firstName);
            buildUserDto.setLastName(lastName);
            buildUserDto.setEmail(email);
-           buildUserDto.setPassword(password);
+           buildUserDto.setPassword(passwordEncoder.encode(password));
            buildUserDto.setProfilePic(base64ProfilePic);
-           //send to the service layer
-           userService.saveUser(buildUserDto);
-           return new ResponseEntity<>(HttpStatus.CREATED);
+           buildUserDto.setRole(role);
+           return ResponseEntity.ok(authenticationService.signUp(buildUserDto));
        } catch (DataPersistFailedException e) {
            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-       } catch (Exception e) {
+       } catch (Exception e){
            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
        }
     }
     @PostMapping(value = "signin")
-    public ResponseEntity<JWTResponse> signIn(@RequestBody SignIn signIn){
-        return null;
+    public ResponseEntity<JWTAuthResponse> signIn(@RequestBody SignIn signIn){
+        return ResponseEntity.ok(authenticationService.signIn(signIn));
+    }
+    @PostMapping
+    public ResponseEntity<JWTAuthResponse> refreshToken(@RequestParam("refreshToken") String refreshToken) {
+        return ResponseEntity.ok(authenticationService.refreshToken(refreshToken));
     }
 
 }
